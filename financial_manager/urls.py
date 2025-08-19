@@ -16,8 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
 
 urlpatterns = [
+     path('', lambda request: redirect('dashboard'), name='home'),
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),  # Add this
+    path('users/', include('users.urls')),
+    path('', include('django.contrib.auth.urls')),  # login/logout
+    path('', include('users.urls')),
 ]

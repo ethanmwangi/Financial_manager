@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from django.contrib.auth.decorators import login_required
 
 # Signup View
 def signup_view(request):
@@ -24,3 +25,7 @@ class CustomLoginView(LoginView):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'users/dashboard.html')
