@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'financial_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+         'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'Financial_manager',   # <-- match your DB name exactly
+        'USER': 'finance_user',        # or 'postgres' if you didn’t make a separate user
+        'PASSWORD': 'finance123',      # update if you used a different password
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -121,3 +125,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'users.CustomUser'
