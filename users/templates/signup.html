@@ -1,7 +1,33 @@
-<h2>Signup</h2>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Sign Up</button>
-</form>
-<p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+{% extends 'base.html' %}
+{% block content %}
+<div class="flex justify-center items-center min-h-screen bg-black">
+  <div class="bg-gray-900 p-8 rounded-2xl shadow-lg w-full max-w-md">
+    <h2 class="text-3xl font-bold text-primary text-center mb-6">Create an Account</h2>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+
+      {% for field in form %}
+        <div>
+          <label class="block text-gray-300 mb-1">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <p class="text-red-500 text-sm">{{ field.errors|join:", " }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit"
+        class="w-full bg-primary text-white py-2 rounded-lg hover:bg-green-800 transition">
+        Sign Up
+      </button>
+    </form>
+
+    <p class="mt-4 text-center text-gray-400">
+      Already have an account?
+      <a href="{% url 'login' %}" class="text-primary hover:underline">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
