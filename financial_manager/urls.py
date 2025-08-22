@@ -21,10 +21,11 @@ from django.contrib.auth.decorators import login_required
 
 
 urlpatterns = [
-     path('', lambda request: redirect('dashboard'), name='home'),
+    path('', lambda request: redirect('dashboard'), name='home'),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
     path('', include('django.contrib.auth.urls')),  # login/logout
     path('', include('users.urls')),
+    path('transactions/', include('transactions.urls')),
     path('transactions/', include('transactions.urls')),
 ]

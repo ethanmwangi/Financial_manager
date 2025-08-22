@@ -1,0 +1,20 @@
+<!-- transactions/templates/transactions/transaction_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Transaction</title>
+</head>
+<body>
+    <h1>Add New Transaction</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Save</button>
+    </form>
+
+    <p><a href="{% url 'transaction_list' %}">⬅ Back to Transactions</a></p>
+</body>
+</html>
