@@ -1,39 +1,48 @@
-<!-- transactions/templates/transactions/transaction_list.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Your Transactions</title>
-</head>
-<body>
-    <h1>Your Transactions</h1>
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-gray-900 text-white rounded-xl shadow-lg">
+  <h1 class="text-2xl font-bold mb-6">Your Transactions</h1>
 
-    <a href="{% url 'transaction_create' %}">➕ Add Transaction</a>
+  <div class="mb-4 flex justify-end">
+    <a href="{% url 'add_transaction' %}" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-white">
+      ➕ Add Transaction
+    </a>
+  </div>
 
-    {% if transactions %}
-        <table border="1" cellpadding="8">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Description</th>
-                    <th>Amount</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.date }}</td>
-                    <td>{{ transaction.description }}</td>
-                    <td>{{ transaction.amount }}</td>
-                    <td>{{ transaction.category }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No transactions yet. <a href="{% url 'transaction_create' %}">Add one</a></p>
-    {% endif %}
-
-</body>
-</html>
+  {% if transactions %}
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse">
+        <thead class="bg-gray-800">
+          <tr>
+            <th class="p-3 text-left">Date</th>
+            <th class="p-3 text-left">Description</th>
+            <th class="p-3 text-left">Amount</th>
+            <th class="p-3 text-left">Category</th>
+            <th class="p-3 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for transaction in transactions %}
+            <tr class="border-b border-gray-700">
+              <td class="p-3">{{ transaction.date }}</td>
+              <td class="p-3">{{ transaction.description }}</td>
+              <td class="p-3 {% if transaction.amount > 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                {{ transaction.amount }}
+              </td>
+              <td class="p-3">{{ transaction.category }}</td>
+              <td class="p-3 flex gap-3">
+                <a href="{% url 'edit_transaction' transaction.pk %}" class="text-blue-400 hover:underline">Edit</a>
+                <a href="{% url 'delete_transaction' transaction.pk %}" class="text-red-400 hover:underline">Delete</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="text-gray-400 mt-4">
+      No transactions yet. <a href="{% url 'add_transaction' %}" class="text-green-400 underline">Add one</a>.
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

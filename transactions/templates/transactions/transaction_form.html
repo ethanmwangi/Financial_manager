@@ -1,20 +1,21 @@
-<!-- transactions/templates/transactions/transaction_form.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Transaction</title>
-</head>
-<body>
-    <h1>Add New Transaction</h1>
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-gray-900 text-white p-6 rounded-xl shadow-lg">
+  <h1 class="text-xl font-bold mb-4">
+    {% if form.instance.pk %} Edit Transaction {% else %} Add Transaction {% endif %}
+  </h1>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
 
-        <button type="submit">Save</button>
-    </form>
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-lg font-semibold">
+      Save
+    </button>
+  </form>
 
-    <p><a href="{% url 'transaction_list' %}">⬅ Back to Transactions</a></p>
-</body>
-</html>
+  <p class="mt-4">
+    <a href="{% url 'transaction_list' %}" class="text-gray-400 hover:underline">⬅ Back to Transactions</a>
+  </p>
+</div>
+{% endblock %}
