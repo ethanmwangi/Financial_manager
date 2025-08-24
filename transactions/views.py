@@ -55,4 +55,4 @@ def add_transaction(request):
             return redirect('transaction_list')
     else:
         form = TransactionForm()
-    return render(request, 'transactions_templates/add_transaction.html', {'form': form})
+    return render(request, 'transactions/add_transaction.html', {'form': form})
