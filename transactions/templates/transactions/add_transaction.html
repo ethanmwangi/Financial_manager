@@ -69,7 +69,7 @@
 <body>
     <h1>Add New Transaction</h1>
 
-    <form method="post">
+    <form method="post" action="{% url 'add_transaction' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Save</button>

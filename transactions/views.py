@@ -52,7 +52,11 @@ def add_transaction(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
+            # Redirect to the list page so you can see the new transaction
             return redirect('transaction_list')
+        else:
+            # 👇 add this line
+            print(form.errors) 
     else:
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
