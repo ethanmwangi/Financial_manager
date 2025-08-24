@@ -4,11 +4,10 @@ from django.contrib.auth.decorators import login_required
 from .models import Transaction
 from .forms import TransactionForm
 
-
 @login_required
 def transaction_list(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'transactions_templates/transaction_list.html', {'transactions': transactions})
+    return render(request, 'transactions/transaction_list.html', {'transactions': transactions})
 
 
 @login_required
@@ -22,7 +21,7 @@ def transaction_create(request):
             return redirect('transaction_list')
     else:
         form = TransactionForm()
-    return render(request, 'transactions_templates/transaction_create.html', {'form': form})
+    return render(request, 'transactions/transaction_form.html', {'form': form})
 
 @login_required
 def edit_transaction(request, pk):
@@ -34,7 +33,7 @@ def edit_transaction(request, pk):
             return redirect('transaction_list')
     else:
         form = TransactionForm(instance=transaction)
-    return render(request, 'transactions_templates/edit_transaction.html', {'form': form})
+    return render(request, 'transactions/edit_transaction.html', {'form': form})
 
 
 @login_required
@@ -43,4 +42,17 @@ def delete_transaction(request, pk):
     if request.method == 'POST':
         transaction.delete()
         return redirect('transaction_list')
-    return render(request, 'transactions_templates/delete_transaction.html', {'transaction': transaction})
+    return render(request, 'transactions/delete_transaction.html', {'transaction': transaction})
+
+@login_required
+def add_transaction(request):
+    if request.method == 'POST':
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            transaction = form.save(commit=False)
+            transaction.user = request.user
+            transaction.save()
+            return redirect('transaction_list')
+    else:
+        form = TransactionForm()
+    return render(request, 'transactions_templates/add_transaction.html', {'form': form})
