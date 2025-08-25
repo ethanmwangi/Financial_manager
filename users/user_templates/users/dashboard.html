@@ -6,39 +6,20 @@
     <h2 class="text-3xl font-bold mb-2 text-center">Welcome, {{ user.username }} 👋</h2>
     <p class="text-lg mb-6 text-center">This is your financial dashboard.</p>
 
-    <!-- ✅ Quick Links (restored) -->
+    <!-- Quick Links -->
     <div class="flex flex-wrap gap-3 justify-center mb-8">
-        <a href="{% url 'transaction_list' %}"
-           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">View Transactions</a>
-        <a href="{% url 'add_transaction' %}"
-           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">Add Transaction</a>
-        <a href="{% url 'logout' %}"
-           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">Logout</a>
+        <a href="{% url 'transaction_list' %}" class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">
+            View Transactions
+        </a>
+        <a href="{% url 'add_transaction' %}" class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">
+            Add Transaction
+        </a>
+        <a href="{% url 'logout' %}" class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">
+            Logout
+        </a>
     </div>
 
-    <!-- Your original 3 cards: Salary / Goal / Progress (kept) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">💰 Salary</h3>
-            <p class="text-lg">
-                {% if user.salary %} ${{ user.salary }} {% else %} Not set yet {% endif %}
-            </p>
-        </div>
-
-        <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">🎯 Financial Goal</h3>
-            <p class="text-lg">
-                {% if user.financial_goal %} {{ user.financial_goal }} {% else %} Not set yet {% endif %}
-            </p>
-        </div>
-
-        <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">📊 Progress</h3>
-            <p class="text-lg">Coming soon...</p>
-        </div>
-    </div>
-
-    <!-- ✅ New totals row: Income / Expenses / Balance -->
+    <!-- Totals: Income / Expenses / Balance -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div class="bg-black text-white rounded-lg p-6 shadow-md">
             <h3 class="text-xl font-semibold mb-2">Total Income</h3>
@@ -56,7 +37,7 @@
         </div>
     </div>
 
-    <!-- ✅ Recent Transactions -->
+    <!-- Recent Transactions -->
     <div class="bg-black text-white rounded-lg p-6 shadow-md">
         <h3 class="text-2xl font-bold mb-4">Recent Transactions</h3>
         {% if recent_tx %}
@@ -65,10 +46,10 @@
                 <li class="py-3 flex items-center justify-between">
                     <div>
                         <div class="font-semibold">
-                            {{ t.title|default:t.description|default:t.category|default:"(no title)" }}
+                            {{ t.description|default:"(no description)" }}
                         </div>
                         <div class="text-sm text-gray-400">
-                            {{ t.date }} • {{ t.category }} • {{ t.transaction_type|capfirst }}
+                            {{ t.date }} • {{ t.category|default:"Uncategorized" }} • {{ t.transaction_type|capfirst }}
                         </div>
                     </div>
                     <div class="text-lg {% if t.transaction_type == 'income' %}text-green-400{% else %}text-red-400{% endif %}">
@@ -78,7 +59,9 @@
                 {% endfor %}
             </ul>
         {% else %}
-            <p class="text-gray-300">No transactions yet. <a class="text-green-400 underline" href="{% url 'add_transaction' %}">Add one</a>.</p>
+            <p class="text-gray-300">No transactions yet. 
+                <a class="text-green-400 underline" href="{% url 'add_transaction' %}">Add one</a>.
+            </p>
         {% endif %}
     </div>
 </div>

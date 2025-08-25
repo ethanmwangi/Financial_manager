@@ -59,8 +59,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / "templates",  # 👈 tell Django about the global templates folder
-            BASE_DIR / "users"/ "user_templates",   # 👈 tell Django about the global templates folder
+            BASE_DIR / "templates", 
+            BASE_DIR / "users"/ "user_templates",   
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'financial_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Financial_manager',   # <-- match your DB name exactly
         'USER': 'finance_user',        # or 'postgres' if you didn’t make a separate user
         'PASSWORD': 'finance123',      # update if you used a different password

@@ -28,7 +28,7 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
-# ✅ Dashboard View (updated, safe & lightweight)
+#  Dashboard View 
 @login_required
 def dashboard_view(request):
     qs = Transaction.objects.filter(user=request.user)
