@@ -6,7 +6,7 @@
     <title>Edit Transaction</title>
     <style>
         body {
-            background-color: #111; /* black background */
+            background-color: #111;
             color: #fff;
             font-family: Arial, sans-serif;
             margin: 0;
@@ -27,7 +27,7 @@
         }
         h1 {
             text-align: center;
-            color: #00ff88; /* green highlight */
+            color: #00ff88;
             margin-bottom: 20px;
         }
         form p {
@@ -78,7 +78,7 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit">Save Changes</button>
+                <button type="submit">Update</button>
             </form>
             <a href="{% url 'transaction_list' %}" class="back-link">⬅ Back to Transactions</a>
         </div>

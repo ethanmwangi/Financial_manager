@@ -6,75 +6,82 @@
     <title>Add Transaction</title>
     <style>
         body {
+            background-color: #111;
+            color: #fff;
             font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #e0e0e0;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+            width: 400px;
         }
         h1 {
-            color: #4CAF50;
+            text-align: center;
+            color: #00ff88;
+            margin-bottom: 20px;
         }
-        form {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 450px;
-            margin-top: 20px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        form p {
+            margin: 15px 0;
         }
         label {
             display: block;
-            margin-top: 10px;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             font-weight: bold;
-            color: #b0b0b0;
         }
         input, select, textarea {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px;
             border: 1px solid #333;
-            border-radius: 4px;
-            background: #2b2b2b;
-            color: #e0e0e0;
-        }
-        input:focus, select:focus, textarea:focus {
-            border-color: #4CAF50;
-            outline: none;
+            border-radius: 5px;
+            background-color: #222;
+            color: #fff;
         }
         button {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 16px;
+            width: 100%;
+            padding: 10px;
+            background-color: #00ff88;
+            color: #111;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            border-radius: 5px;
             font-weight: bold;
+            cursor: pointer;
         }
         button:hover {
-            background: #45a049;
+            background-color: #00cc6a;
         }
-        a {
-            display: inline-block;
+        .back-link {
+            display: block;
+            text-align: center;
             margin-top: 15px;
-            color: #4CAF50;
+            color: #00ff88;
             text-decoration: none;
-            font-weight: bold;
         }
-        a:hover {
+        .back-link:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <h1>Add New Transaction</h1>
-
-    <form method="post" action="{% url 'add_transaction' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
-
-    <p><a href="{% url 'transaction_list' %}">⬅ Back to Transactions</a></p>
+    <div class="container">
+        <div class="card">
+            <h1>Add New Transaction</h1>
+            <form method="post" action="{% url 'add_transaction' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Save</button>
+            </form>
+            <a href="{% url 'transaction_list' %}" class="back-link">⬅ Back to Transactions</a>
+        </div>
+    </div>
 </body>
 </html>

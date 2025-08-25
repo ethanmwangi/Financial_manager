@@ -2,82 +2,84 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="bg-[var(--primary-color)] rounded-lg shadow-lg p-8 text-center">
-    <h2 class="text-3xl font-bold mb-4">Welcome, {{ user.username }} 👋</h2>
-    <p class="text-lg mb-6">Here’s a summary of your finances:</p>
+<div class="bg-[var(--primary-color)] rounded-lg shadow-lg p-8">
+    <h2 class="text-3xl font-bold mb-2 text-center">Welcome, {{ user.username }} 👋</h2>
+    <p class="text-lg mb-6 text-center">This is your financial dashboard.</p>
 
-    <!-- Summary Cards -->
+    <!-- ✅ Quick Links (restored) -->
+    <div class="flex flex-wrap gap-3 justify-center mb-8">
+        <a href="{% url 'transaction_list' %}"
+           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">View Transactions</a>
+        <a href="{% url 'add_transaction' %}"
+           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">Add Transaction</a>
+        <a href="{% url 'logout' %}"
+           class="bg-black hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded-lg">Logout</a>
+    </div>
+
+    <!-- Your original 3 cards: Salary / Goal / Progress (kept) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">💵 Total Income</h3>
-            <p class="text-2xl font-bold">${{ total_income }}</p>
+            <h3 class="text-xl font-semibold mb-2">💰 Salary</h3>
+            <p class="text-lg">
+                {% if user.salary %} ${{ user.salary }} {% else %} Not set yet {% endif %}
+            </p>
         </div>
 
         <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">💸 Total Expenses</h3>
-            <p class="text-2xl font-bold">${{ total_expenses }}</p>
+            <h3 class="text-xl font-semibold mb-2">🎯 Financial Goal</h3>
+            <p class="text-lg">
+                {% if user.financial_goal %} {{ user.financial_goal }} {% else %} Not set yet {% endif %}
+            </p>
         </div>
 
         <div class="bg-black text-white rounded-lg p-6 shadow-md">
-            <h3 class="text-xl font-semibold mb-2">📊 Balance</h3>
-            <p class="text-2xl font-bold">${{ balance }}</p>
+            <h3 class="text-xl font-semibold mb-2">📊 Progress</h3>
+            <p class="text-lg">Coming soon...</p>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="mt-8 mb-10">
-        <h3 class="text-2xl font-semibold mb-4">Quick Actions</h3>
-        <div class="flex flex-wrap justify-center gap-4">
-            <a href="{% url 'add_transaction' %}" 
-               class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md">
-                ➕ Add Transaction
-            </a>
-            <a href="{% url 'transaction_list' %}" 
-               class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md">
-                📋 View All Transactions
-            </a>
+    <!-- ✅ New totals row: Income / Expenses / Balance -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-black text-white rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-semibold mb-2">Total Income</h3>
+            <p class="text-2xl text-green-400">${{ income }}</p>
+        </div>
+        <div class="bg-black text-white rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-semibold mb-2">Total Expenses</h3>
+            <p class="text-2xl text-red-400">${{ expenses }}</p>
+        </div>
+        <div class="bg-black text-white rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-semibold mb-2">Balance</h3>
+            <p class="text-2xl {% if balance >= 0 %}text-green-400{% else %}text-red-400{% endif %}">
+                ${{ balance }}
+            </p>
         </div>
     </div>
 
-    <!-- Recent Transactions -->
-    <div class="mt-10">
-        <h3 class="text-2xl font-semibold mb-4">Recent Transactions</h3>
-        {% if transactions %}
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-gray-800 text-white">
-                        <th class="py-2 px-4">Date</th>
-                        <th class="py-2 px-4">Description</th>
-                        <th class="py-2 px-4">Type</th>
-                        <th class="py-2 px-4">Amount</th>
-                        <th class="py-2 px-4">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for t in transactions %}
-                    <tr class="border-b border-gray-700 text-white">
-                        <td class="py-2 px-4">{{ t.date }}</td>
-                        <td class="py-2 px-4">{{ t.description }}</td>
-                        <td class="py-2 px-4 capitalize">{{ t.transaction_type }}</td>
-                        <td class="py-2 px-4">${{ t.amount }}</td>
-                        <td class="py-2 px-4">
-                            <a href="{% url 'edit_transaction' t.id %}" class="text-yellow-400 hover:underline">Edit</a> |
-                            <a href="{% url 'delete_transaction' t.id %}" class="text-red-400 hover:underline">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- ✅ Recent Transactions -->
+    <div class="bg-black text-white rounded-lg p-6 shadow-md">
+        <h3 class="text-2xl font-bold mb-4">Recent Transactions</h3>
+        {% if recent_tx %}
+            <ul class="divide-y divide-gray-800">
+                {% for t in recent_tx %}
+                <li class="py-3 flex items-center justify-between">
+                    <div>
+                        <div class="font-semibold">
+                            {{ t.title|default:t.description|default:t.category|default:"(no title)" }}
+                        </div>
+                        <div class="text-sm text-gray-400">
+                            {{ t.date }} • {{ t.category }} • {{ t.transaction_type|capfirst }}
+                        </div>
+                    </div>
+                    <div class="text-lg {% if t.transaction_type == 'income' %}text-green-400{% else %}text-red-400{% endif %}">
+                        {% if t.transaction_type == 'income' %}+{% else %}-{% endif %}${{ t.amount }}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
         {% else %}
-            <p class="text-white">No transactions yet.</p>
+            <p class="text-gray-300">No transactions yet. <a class="text-green-400 underline" href="{% url 'add_transaction' %}">Add one</a>.</p>
         {% endif %}
-    </div>
-
-    <div class="mt-8">
-        <a href="{% url 'logout' %}"
-           class="inline-block bg-black hover:bg-gray-900 text-white font-bold py-2 px-6 rounded-lg">
-            Logout
-        </a>
     </div>
 </div>
 {% endblock %}
