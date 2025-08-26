@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'financial_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Financial_manager',   # <-- match your DB name exactly
-        'USER': 'finance_user',        # or 'postgres' if you didn’t make a separate user
-        'PASSWORD': 'finance123',      # update if you used a different password
+        'NAME': 'financial_manager_db',  
+        'USER': 'fm_user',
+        'PASSWORD': 'strongpassword123',     
         'HOST': 'localhost',
         'PORT': '5432',
     }
