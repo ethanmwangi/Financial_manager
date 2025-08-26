@@ -8,6 +8,18 @@
     <!-- TailwindCSS (CDN for now, later we can install properly if you want) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+<style>
+  input, select, textarea {
+    position: relative !important;
+    z-index: 1 !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    background: #111 !important; /* dark background so text shows */
+    color: #fff !important;      /* white text */
+  }
+</style>
+
+
     <style>
         :root {
             --primary-color: #064e3b; /* dark green */
