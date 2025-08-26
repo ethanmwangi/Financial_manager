@@ -55,7 +55,7 @@ def add_transaction(request):
             # Redirect to the list page so you can see the new transaction
             return redirect('transaction_list')
         else:
-            # 👇 add this line
+            
             print(form.errors) 
     else:
         form = TransactionForm()
