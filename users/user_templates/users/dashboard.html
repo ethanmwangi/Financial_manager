@@ -38,8 +38,14 @@
     </div>
 
     <!-- Recent Transactions -->
-    <div class="bg-black text-white rounded-lg p-6 shadow-md">
-        <h3 class="text-2xl font-bold mb-4">Recent Transactions</h3>
+<!-- Recent Transactions -->
+<div class="bg-black text-white rounded-lg p-6 shadow-md mb-10">
+    <h3 class="text-2xl font-bold mb-4">Recent Transactions</h3>
+
+    <!--  DEBUG INFO -->
+    <p>DEBUG: recent_tx count = {{ recent_tx.count }}</p>
+    <p>DEBUG: logged in user = {{ user.username }}</p>
+
         {% if recent_tx %}
             <ul class="divide-y divide-gray-800">
                 {% for t in recent_tx %}
@@ -64,5 +70,49 @@
             </p>
         {% endif %}
     </div>
+
+    <!-- 🔎 DEBUG: Dump all transactions -->
+    <div class="bg-red-900 text-white rounded-lg p-6 shadow-md">
+        <h3 class="text-xl font-bold mb-4">DEBUG: All Transactions for {{ user.username }}</h3>
+        {% if all_tx %}
+            <ul class="list-disc pl-6 space-y-2">
+                {% for t in all_tx %}
+                <li>
+                    ID: {{ t.id }} |
+                    Desc: {{ t.description|default:"(no desc)" }} |
+                    Amount: {{ t.amount }} |
+                    Type: {{ t.transaction_type }} |
+                    User: {{ t.user }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No transactions found for this user.</p>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}
+
+<!-- 📚 Financial Literacy Books -->
+<div class="bg-black text-white rounded-lg p-6 shadow-md mb-10">
+    <h3 class="text-2xl font-bold mb-4">Financial Literacy Resources</h3>
+    {% if books %}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for book in books %}
+            <div class="bg-gray-800 rounded-lg p-4">
+                {% if book.thumbnail %}
+                <img src="{{ book.thumbnail }}" alt="{{ book.title }}" class="w-full h-48 object-cover rounded-md mb-3">
+                {% endif %}
+                <h4 class="text-lg font-semibold">{{ book.title }}</h4>
+                <p class="text-sm text-gray-400">By {{ book.authors }}</p>
+                <a href="{{ book.previewLink }}" target="_blank"
+                   class="text-green-400 underline mt-2 block">
+                   Preview →
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-300">No books available right now. Try again later.</p>
+    {% endif %}
+</div>
