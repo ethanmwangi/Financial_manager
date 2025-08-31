@@ -1,4 +1,5 @@
 # transactions/views.py
+from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Transaction
@@ -12,9 +13,10 @@ def transaction_list(request):
     if query:
         transactions = transactions.filter(description__icontains=query)
 
-    # Totals
-    income = sum(t.amount for t in transactions if t.transaction_type == 'income')
-    expenses = sum(t.amount for t in transactions if t.transaction_type == 'expense')
+    # Totals (calculated from ALL of the user’s transactions, not just search results)
+    user_tx = Transaction.objects.filter(user=request.user)
+    income = sum((t.amount for t in user_tx if t.transaction_type == 'income'), Decimal('0'))
+    expenses = sum((t.amount for t in user_tx if t.transaction_type == 'expense'), Decimal('0'))
     balance = income - expenses
 
     return render(request, 'transactions/transaction_list.html', {
@@ -71,8 +73,6 @@ def add_transaction(request):
             transaction.user = request.user
             transaction.save()
             return redirect('transaction_list')
-        else:
-            print(form.errors)
     else:
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})

@@ -45,9 +45,10 @@ def logout_view(request):
     return redirect('login')
 
 # Dashboard View
+# Dashboard View
 @login_required
 def dashboard_view(request):
-    # ✅ Always filter by username instead of direct user object
+    # Always filter by username instead of direct user object
     user_tx = Transaction.objects.filter(user__username=request.user.username)
 
     # Debugging
