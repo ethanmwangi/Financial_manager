@@ -6,7 +6,7 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth.decorators import login_required
 from transactions.models import Transaction
 from decimal import Decimal
-
+from books.models import Book
 # Signup View
 def signup_view(request):
     if request.method == 'POST':
@@ -45,57 +45,23 @@ def logout_view(request):
     return redirect('login')
 
 # Dashboard View
-# Dashboard View
 @login_required
 def dashboard_view(request):
-    # Always filter by username instead of direct user object
-    user_tx = Transaction.objects.filter(user__username=request.user.username)
+    user_tx = Transaction.objects.filter(user=request.user).order_by("-date")
 
-    # Debugging
-    all_tx = Transaction.objects.all()
-    print("DEBUG: Logged-in user:", request.user)
-    print("DEBUG: All transactions in DB:", list(all_tx))
-    print("DEBUG: Transactions for this user (by username):", list(user_tx))
-
-    income = sum((t.amount for t in user_tx if str(t.transaction_type).lower() == 'income'), Decimal('0'))
-    expenses = sum((t.amount for t in user_tx if str(t.transaction_type).lower() == 'expense'), Decimal('0'))
+    income = sum((t.amount for t in user_tx if t.transaction_type == "income"), Decimal("0"))
+    expenses = sum((t.amount for t in user_tx if t.transaction_type == "expense"), Decimal("0"))
     balance = income - expenses
 
-    context = {
-        'income': income,
-        'expenses': expenses,
-        'balance': balance,
-        'recent_tx': user_tx.order_by('-date')[:5],  # ✅ use username-filtered qs
-        'all_tx': all_tx,
-        'user_tx': user_tx
-    }
-    return render(request, 'users/dashboard.html', context)
-
-# --- New: Fetch Books from Google Books API ---
-    url = "https://www.googleapis.com/books/v1/volumes"
-    params = {"q": "financial literacy", "maxResults": 5}
-    books_data = []
-    try:
-        res = requests.get(url, params=params, timeout=5)
-        res.raise_for_status()
-        data = res.json()
-
-        for item in data.get("items", []):
-            volume = item["volumeInfo"]
-            books_data.append({
-                "title": volume.get("title"),
-                "authors": ", ".join(volume.get("authors", ["Unknown"])),
-                "thumbnail": volume.get("imageLinks", {}).get("thumbnail"),
-                "previewLink": volume.get("previewLink"),
-            })
-    except Exception as e:
-        print("Google Books API error:", e)
+    # 🔹 Get books from your database (instead of Google API)
+    books_data = Book.objects.all()[:5]  # limit to 5
 
     context = {
         "income": income,
         "expenses": expenses,
         "balance": balance,
-        "recent_tx": qs.order_by("-date")[:5],
-        "books": books_data,  # ✅ pass books to template
+        "recent_tx": user_tx[:5],
+        "all_tx": user_tx,
+        "books": books_data,   # pass Book queryset directly
     }
     return render(request, "users/dashboard.html", context)
