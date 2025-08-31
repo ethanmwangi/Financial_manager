@@ -28,5 +28,7 @@ urlpatterns = [
     path('', include('users.urls')),
     path('transactions/', include('transactions.urls')),
     path('transactions/', include('transactions.urls')),
+    path('api/', include('books.urls')),  # books API
+    
     
 ]
