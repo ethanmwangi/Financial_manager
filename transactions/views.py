@@ -6,8 +6,24 @@ from .forms import TransactionForm
 
 @login_required
 def transaction_list(request):
+    query = request.GET.get('q')
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
-    return render(request, 'transactions/transaction_list.html', {'transactions': transactions})
+
+    if query:
+        transactions = transactions.filter(description__icontains=query)
+
+    # Totals
+    income = sum(t.amount for t in transactions if t.transaction_type == 'income')
+    expenses = sum(t.amount for t in transactions if t.transaction_type == 'expense')
+    balance = income - expenses
+
+    return render(request, 'transactions/transaction_list.html', {
+        'transactions': transactions,
+        'income': income,
+        'expenses': expenses,
+        'balance': balance,
+        'query': query,
+    })
 
 
 @login_required
@@ -22,6 +38,7 @@ def transaction_create(request):
     else:
         form = TransactionForm()
     return render(request, 'transactions/transaction_form.html', {'form': form})
+
 
 @login_required
 def edit_transaction(request, pk):
@@ -44,6 +61,7 @@ def delete_transaction(request, pk):
         return redirect('transaction_list')
     return render(request, 'transactions/delete_transaction.html', {'transaction': transaction})
 
+
 @login_required
 def add_transaction(request):
     if request.method == 'POST':
@@ -52,11 +70,9 @@ def add_transaction(request):
             transaction = form.save(commit=False)
             transaction.user = request.user
             transaction.save()
-            # Redirect to the list page so you can see the new transaction
             return redirect('transaction_list')
         else:
-            
-            print(form.errors) 
+            print(form.errors)
     else:
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
