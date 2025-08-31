@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="max-w-4xl mx-auto mt-10 p-6 bg-gray-900 text-white rounded-xl shadow-lg">
+
+  <!-- Header -->
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">Your Transactions</h1>
     <div class="flex gap-3">
@@ -13,12 +15,40 @@
     </div>
   </div>
 
+  <!-- Totals -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-black p-4 rounded-lg shadow">
+      <h3 class="font-semibold">Total Income</h3>
+      <p class="text-green-400 text-xl font-bold">${{ income }}</p>
+    </div>
+    <div class="bg-black p-4 rounded-lg shadow">
+      <h3 class="font-semibold">Total Expenses</h3>
+      <p class="text-red-400 text-xl font-bold">${{ expenses }}</p>
+    </div>
+    <div class="bg-black p-4 rounded-lg shadow">
+      <h3 class="font-semibold">Balance</h3>
+      <p class="{% if balance >= 0 %}text-green-400{% else %}text-red-400{% endif %} text-xl font-bold">
+        ${{ balance }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <form method="get" class="mb-6 flex">
+    <input type="text" name="q" placeholder="Search transactions..."
+           value="{{ query|default:'' }}"
+           class="flex-1 p-2 rounded-lg border border-gray-600 text-black">
+    <button type="submit" class="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">
+      🔍 Search
+    </button>
+  </form>
+
+  <!-- Transactions -->
   {% if transactions %}
     <div class="overflow-x-auto">
       <table class="w-full border-collapse">
         <thead class="bg-gray-800">
           <tr>
-            
             <th class="p-3 text-left">Date</th>
             <th class="p-3 text-left">Description</th>
             <th class="p-3 text-left">Amount</th>
@@ -31,8 +61,8 @@
             <tr class="border-b border-gray-700">
               <td class="p-3">{{ transaction.date }}</td>
               <td class="p-3">{{ transaction.description }}</td>
-              <td class="p-3 {% if transaction.amount > 0 %}text-green-400{% else %}text-red-400{% endif %}">
-                {{ transaction.amount }}
+              <td class="p-3 {% if transaction.transaction_type == 'income' %}text-green-400{% else %}text-red-400{% endif %}">
+                {% if transaction.transaction_type == 'income' %}+{% else %}-{% endif %}${{ transaction.amount }}
               </td>
               <td class="p-3">{{ transaction.category }}</td>
               <td class="p-3 flex gap-3">
@@ -46,7 +76,7 @@
     </div>
   {% else %}
     <p class="text-gray-400 mt-4">
-      No transactions yet. <a href="{% url 'add_transaction' %}" class="text-green-400 underline">Add one</a>.
+      No transactions found. <a href="{% url 'add_transaction' %}" class="text-green-400 underline">Add one</a>.
     </p>
   {% endif %}
 </div>
