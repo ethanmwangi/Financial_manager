@@ -5,7 +5,6 @@ from django.shortcuts import render
 from .views import dashboard_view
 
 
-
 # Simple dashboard view
 def dashboard_view(request):
     return render(request, 'users/dashboard.html')

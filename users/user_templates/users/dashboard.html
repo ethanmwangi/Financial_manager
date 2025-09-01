@@ -17,10 +17,18 @@
        
     </div>
 
-    <!-- Expense Breakdown Chart -->
-    <div class="bg-gray-900 text-white rounded-lg p-6 shadow-md mb-10">
-        <h3 class="text-2xl font-bold mb-4">Expense Breakdown by Category</h3>
-        <canvas id="categoryChart" width="400" height="200"></canvas>
+    <!-- Charts Side by Side -->
+    <div class="flex flex-wrap gap-6 justify-center mb-10">
+        <!-- Expense Chart -->
+        <div class="bg-gray-900 text-white rounded-lg p-4 shadow-md w-72">
+            <h3 class="text-lg font-bold mb-2 text-center">Expense Breakdown</h3>
+            <canvas id="categoryChart" width="250" height="250"></canvas>
+        </div>
+        <!-- Income Chart -->
+        <div class="bg-gray-900 text-white rounded-lg p-4 shadow-md w-72">
+            <h3 class="text-lg font-bold mb-2 text-center">Income Breakdown</h3>
+            <canvas id="incomeChart" width="250" height="250"></canvas>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -42,16 +50,38 @@
           },
           options: {
             plugins: {
-              legend: {
-                labels: {
-                  color: 'white'
-                }
-              }
+              legend: { labels: { color: 'white' } }
+            }
+          }
+        });
+      });
+
+    fetch('/transactions/api/income-breakdown/')
+      .then(response => response.json())
+      .then(data => {
+        const ctx = document.getElementById('incomeChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'doughnut',
+          data: {
+            labels: data.categories,
+            datasets: [{
+              label: 'Income',
+              data: data.amounts,
+              backgroundColor: [
+                '#34d399', '#818cf8', '#fbbf24', '#22d3ee', '#f472b6', '#facc15'
+              ],
+            }]
+          },
+          options: {
+            plugins: {
+              legend: { labels: { color: 'white' } }
             }
           }
         });
       });
     </script>
+
+  
 
     <!-- Books Section -->
     <div id="books-section" class="bg-black text-white rounded-lg p-6 shadow-md mb-10">

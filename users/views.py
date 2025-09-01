@@ -10,6 +10,7 @@ import requests
 import json
 from books.models import Book
 
+
 # Signup View
 def signup_view(request):
     if request.method == 'POST':
@@ -102,3 +103,4 @@ def dashboard_view(request):
     
     print("🎨 About to render template...")
     return render(request, "users/dashboard.html", context)
+

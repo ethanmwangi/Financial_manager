@@ -33,13 +33,22 @@
     </div>
   </div>
 
-  <!-- Search -->
-  <form method="get" class="mb-6 flex">
-    <input type="text" name="q" placeholder="Search transactions..."
-           value="{{ query|default:'' }}"
-           class="flex-1 p-2 rounded-lg border border-gray-600 text-black">
-    <button type="submit" class="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">
-      🔍 Search
+  <!-- Advanced Filtering -->
+  <form method="get" class="mb-6 flex flex-wrap gap-2">
+    <input type="text" name="q" placeholder="Search..." value="{{ query|default:'' }}"
+           class="p-2 rounded-lg border border-gray-600 text-black">
+    <select name="category" class="p-2 rounded-lg border border-gray-600 text-black">
+      <option value="all">All Categories</option>
+      {% for cat in categories %}
+        <option value="{{ cat }}" {% if category == cat %}selected{% endif %}>{{ cat|title }}</option>
+      {% endfor %}
+    </select>
+    <input type="date" name="start_date" value="{{ start_date|default:'' }}"
+           class="p-2 rounded-lg border border-gray-600 text-black">
+    <input type="date" name="end_date" value="{{ end_date|default:'' }}"
+           class="p-2 rounded-lg border border-gray-600 text-black">
+    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white">
+      Filter
     </button>
   </form>
 

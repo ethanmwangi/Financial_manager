@@ -7,5 +7,6 @@ urlpatterns = [
     path('create/', views.transaction_create, name='transaction_create'),  
     path('edit/<int:pk>/', views.edit_transaction, name='edit_transaction'),
     path('delete/<int:pk>/', views.delete_transaction, name='delete_transaction'),
-     path('api/category-breakdown/', views.category_breakdown_api, name='category-breakdown-api'),
+    path('api/category-breakdown/', views.category_breakdown_api, name='category-breakdown-api'),
+    path('api/income-breakdown/', views.income_breakdown_api, name='income-breakdown-api'),
 ]

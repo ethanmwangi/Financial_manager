@@ -10,17 +10,27 @@ from rest_framework.response import Response
 
 @login_required
 def transaction_list(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q', '')
+    category = request.GET.get('category', '')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
     transactions = Transaction.objects.filter(user=request.user).order_by('-date')
 
     if query:
         transactions = transactions.filter(description__icontains=query)
+    if category and category != 'all':
+        transactions = transactions.filter(category=category)
+    if start_date:
+        transactions = transactions.filter(date__gte=start_date)
+    if end_date:
+        transactions = transactions.filter(date__lte=end_date)
 
-    # FIXED: Calculate totals properly using CAPITAL LETTERS from your model
-    user_tx = Transaction.objects.filter(user=request.user)
-    income = sum((t.amount for t in user_tx if t.transaction_type == 'INCOME'), Decimal('0'))
-    expenses = sum((t.amount for t in user_tx if t.transaction_type == 'EXPENSE'), Decimal('0'))
+    income = sum((t.amount for t in transactions if t.transaction_type == 'income'), Decimal('0'))
+    expenses = sum((t.amount for t in transactions if t.transaction_type == 'expense'), Decimal('0'))
     balance = income - expenses
+
+    # If you have CATEGORY_CHOICES in your model:
+    categories = [c[0] for c in getattr(Transaction, 'CATEGORY_CHOICES', [])]
 
     return render(request, 'transactions/transaction_list.html', {
         'transactions': transactions,
@@ -28,6 +38,10 @@ def transaction_list(request):
         'expenses': expenses,
         'balance': balance,
         'query': query,
+        'category': category,
+        'categories': categories,
+        'start_date': start_date,
+        'end_date': end_date,
     })
 
 
@@ -85,6 +99,20 @@ def add_transaction(request):
 def category_breakdown_api(request):
     user = request.user
     transactions = Transaction.objects.filter(user=user, transaction_type='expense')
+    categories = {}
+    for tx in transactions:
+        cat = tx.category if tx.category else "Other"
+        categories[cat] = categories.get(cat, 0) + float(tx.amount)
+    return Response({
+        "categories": list(categories.keys()),
+        "amounts": list(categories.values())
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def income_breakdown_api(request):
+    user = request.user
+    transactions = Transaction.objects.filter(user=user, transaction_type='income')
     categories = {}
     for tx in transactions:
         cat = tx.category if tx.category else "Other"
