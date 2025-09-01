@@ -37,25 +37,33 @@
         </div>
     </div>
 
-    <!-- 📚 Financial Literacy Books -->
+    <!-- 📚 Financial Literacy Books (FROM API) -->
     <div class="bg-black text-white rounded-lg p-6 shadow-md mb-10">
-        <h3 class="text-2xl font-bold mb-4">Financial Literacy Resources</h3>
+        <h3 class="text-2xl font-bold mb-4">📚 Financial Literacy Books</h3>
+        <p class="text-sm text-gray-400 mb-4">Data loaded from: /api/books/</p>
+        
         {% if books %}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {% for book in books %}
-                <div class="bg-gray-800 rounded-lg p-4">
-                    {% if book.thumbnail %}
-                    <img src="{{ book.thumbnail }}" alt="{{ book.title }}" class="w-full h-48 object-cover rounded-md mb-3">
+                <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                    <h4 class="text-lg font-semibold text-green-400 mb-2">{{ book.title }}</h4>
+                    <p class="text-sm text-gray-300 mb-2">By: {{ book.author }}</p>
+                    {% if book.description %}
+                    <p class="text-xs text-gray-400 mb-3">{{ book.description|truncatewords:15 }}</p>
                     {% endif %}
-                    <h4 class="text-lg font-semibold">{{ book.title }}</h4>
-                    <p class="text-sm text-gray-400">By {{ book.authors }}</p>
-                    <a href="{{ book.previewLink }}" target="_blank"
-                    class="text-green-400 underline mt-2 block">Preview →</a>
+                    {% if book.published_date %}
+                    <p class="text-xs text-gray-500">Published: {{ book.published_date }}</p>
+                    {% endif %}
                 </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p class="text-gray-300">No books available right now. Try again later.</p>
+            <div class="text-center py-8">
+                <p class="text-gray-400">❌ No books found from API</p>
+                <p class="text-sm text-gray-500 mt-2">
+                    Try: <a href="/api/books/" class="text-green-400 underline" target="_blank">Test API directly</a>
+                </p>
+            </div>
         {% endif %}
     </div>
 </div>
