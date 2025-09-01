@@ -3,8 +3,8 @@ from django.conf import settings   # ✅ use settings.AUTH_USER_MODEL
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
-        ('INCOME', 'Income'),
-        ('EXPENSE', 'Expense'),
+        ('income', 'Income'),
+        ('expense', 'Expense'),
     ]
     CATEGORY_CHOICES = [
     ('food', 'Food'),

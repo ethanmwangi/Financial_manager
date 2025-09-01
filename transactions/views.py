@@ -4,6 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .models import Transaction
 from .forms import TransactionForm
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 @login_required
 def transaction_list(request):
@@ -76,3 +79,17 @@ def add_transaction(request):
     else:
         form = TransactionForm()
     return render(request, 'transactions/add_transaction.html', {'form': form})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def category_breakdown_api(request):
+    user = request.user
+    transactions = Transaction.objects.filter(user=user, transaction_type='expense')
+    categories = {}
+    for tx in transactions:
+        cat = tx.category if tx.category else "Other"
+        categories[cat] = categories.get(cat, 0) + float(tx.amount)
+    return Response({
+        "categories": list(categories.keys()),
+        "amounts": list(categories.values())
+    })

@@ -44,43 +44,61 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect('login')
 
-# Dashboard View
+# Dashboard View - ULTIMATE DEBUG VERSION
 @login_required
 def dashboard_view(request):
-    print("🔍 DEBUG: Dashboard view started")
+    print("🚨 ULTIMATE DEBUG: This dashboard view is running!")
     
     # Calculate financial totals
     user_tx = Transaction.objects.filter(user=request.user).order_by("-date")
-    income = sum((t.amount for t in user_tx if t.transaction_type == "INCOME"), Decimal("0"))
-    expenses = sum((t.amount for t in user_tx if t.transaction_type == "EXPENSE"), Decimal("0"))
+    income = sum((t.amount for t in user_tx if t.transaction_type == "income"), Decimal("0"))
+    expenses = sum((t.amount for t in user_tx if t.transaction_type == "expense"), Decimal("0"))
     balance = income - expenses
-    print(f"💰 DEBUG: Balance calculated: ${balance}")
+    print(f"💰 Balance: ${balance}")
 
-    # Get books directly from database (skip API call for now)
-    from books.models import Book
-    books_queryset = Book.objects.all()[:6]  # Get first 6 books
-    
-    # Convert to list of dictionaries (like API would return)
-    books_data = []
-    for book in books_queryset:
-        books_data.append({
-            'id': book.id,
-            'title': book.title,
-            'author': book.author,
-            'description': book.description,
-            'published_date': str(book.published_date) if book.published_date else None
-        })
-    
-    print(f"📚 DEBUG: Got {len(books_data)} books from database")
-    print(f"📖 DEBUG: First book: {books_data[0] if books_data else 'None'}")
+    # Import books model and test
+    print("📚 Testing books import...")
+    try:
+        from books.models import Book
+        print("✅ Books model imported successfully")
+        
+        book_count = Book.objects.count()
+        print(f"📊 Book count in database: {book_count}")
+        
+        books_queryset = Book.objects.all()[:6]
+        print(f"📋 Queryset length: {len(books_queryset)}")
+        
+        # Convert to list
+        books_data = []
+        for book in books_queryset:
+            book_dict = {
+                'id': book.id,
+                'title': book.title,
+                'author': book.author,
+                'description': book.description,
+                'published_date': str(book.published_date) if book.published_date else None
+            }
+            books_data.append(book_dict)
+            print(f"📖 Added book: {book.title}")
+        
+        print(f"📚 Final books_data length: {len(books_data)}")
+        print(f"📝 First book data: {books_data[0] if books_data else 'NONE'}")
+        
+    except Exception as e:
+        print(f"💥 Error with books: {e}")
+        books_data = []
 
+    # Test context creation
     context = {
         "income": income,
         "expenses": expenses,
         "balance": balance,
         "recent_tx": user_tx[:5],
-        "books": books_data,  # This should now have your 7 books (limited to 6)
+        "books": books_data,
     }
     
-    print("🎯 DEBUG: Context created, rendering template")
+    print(f"🎯 Context books length: {len(context['books'])}")
+    print(f"🎯 Context keys: {list(context.keys())}")
+    
+    print("🎨 About to render template...")
     return render(request, "users/dashboard.html", context)
