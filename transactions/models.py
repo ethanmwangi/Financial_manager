@@ -13,6 +13,7 @@ class Transaction(models.Model):
     ('bills', 'Bills'),
     ('salary', 'Salary'),
     ('other', 'Other'),
+    ('income stream', 'Income Stream'),
 ]
     
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # ✅
