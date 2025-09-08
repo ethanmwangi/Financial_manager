@@ -11,6 +11,7 @@ class Transaction(models.Model):
     ('transport', 'Transport'),
     ('shopping', 'Shopping'),
     ('bills', 'Bills'),
+    ('salary', 'Salary'),
     ('other', 'Other'),
 ]
     
